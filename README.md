@@ -1,8 +1,13 @@
 # Modifications
 
-[ ✓ ]  Rounded Buttons
-[ ✓ ] Event-based script
-[ WIP ] Loading spinner
+Progress list:
+
+| Status | Modification |
+| ------ | ------ |
+| ✓ | Rounded Buttons |
+| ✓ | Event-based script|
+|  WIP | Loading spinner |
+
 
 Refer to [GitHub Repo] for commit details
 
@@ -57,4 +62,5 @@ Added a new UI sprite `Rounded40px` with higher border-radius to make button loo
 [//]: # 
 
    [GitHub Repo]: <https://github.com/CKodes/btn-anim>
+
 
