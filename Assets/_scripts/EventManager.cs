@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 {
     // Button GameObject
     [SerializeField] private Button controller;
@@ -42,38 +42,44 @@ public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     void Start()
     {
+        DOTween.Init(false, true, LogBehaviour.ErrorsOnly);
         currentColor = normalColor;
         controller.GetComponent<Image>().color = currentColor;
     }
 
-    // HoverEnter Anim
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(currentColor == normalColor)
+        Backend.onEntHover += EntHoverAnim;
+        Backend.onExtHover -= ExtHoverAnim;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Backend.onEntHover -= EntHoverAnim;
+        Backend.onExtHover += ExtHoverAnim;
+    }
+
+    // Hover-On Anim
+    void EntHoverAnim()
+    {
+        if (currentColor == normalColor)
         {
             arrowTrsfm.DOMoveY(moveUp, imgAnimTime);
-            checkTrsfm.DOMoveY(537, imgAnimTime).SetEase(Ease.InBounce);
-        }
-        else
-        {
-            currentColor = currentColor;
+            checkTrsfm.DOMoveY(537, imgAnimTime);
         }
     }
 
-    // HoverExit Anim
-    public void OnPointerExit(PointerEventData eventData)
+    // Hover-Off Anim
+    void ExtHoverAnim ()
     {
-        if(currentColor == normalColor)
+        if (currentColor == normalColor)
         {
             arrowTrsfm.DOMoveY(moveCenter, imgAnimTime);
             checkTrsfm.DOMoveY(moveDown, imgAnimTime);
         }
-        else
-        {
-            currentColor = currentColor;
-        }
     }
-
+    
+    /*
     // Clicked Anim
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -102,4 +108,5 @@ public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             });
         }
     }
+    */
 }
