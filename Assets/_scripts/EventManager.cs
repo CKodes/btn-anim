@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
+public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     // Button GameObject
     [SerializeField] private Button controller;
@@ -47,16 +47,30 @@ public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         controller.GetComponent<Image>().color = currentColor;
     }
 
+    // Hover-on, call EntHoverAnim method
     public void OnPointerEnter(PointerEventData eventData)
     {
         Backend.onEntHover += EntHoverAnim;
         Backend.onExtHover -= ExtHoverAnim;
     }
 
+    // Hover-off, call ExtHoverAnim method
     public void OnPointerExit(PointerEventData eventData)
     {
         Backend.onEntHover -= EntHoverAnim;
         Backend.onExtHover += ExtHoverAnim;
+    }
+
+    // Click down, call ClickDownAnim
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Backend.onPress += ClickDownAnim;
+    }
+
+    // Click release, call ClickReleaseAnim
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Backend.onRelease += ClickReleaseAnim;
     }
 
     // Hover-On Anim
@@ -78,35 +92,50 @@ public class EventManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             checkTrsfm.DOMoveY(moveDown, imgAnimTime);
         }
     }
-    
-    /*
-    // Clicked Anim
-    public void OnPointerClick(PointerEventData eventData)
+
+    // ClickDownAnim
+    void ClickDownAnim ()
     {
-        if(eventData.button == PointerEventData.InputButton.Left)
+        if (currentColor == normalColor)
         {
-            checkImg.DOFade(0, 0.1f).SetEase(Ease.Flash).SetAutoKill(true);
-            arrowImg.DOFade(0, 0.1f).SetEase(Ease.Flash).SetAutoKill(true);
+            //Btn scales down
+            btnTrsfm.DOScale(new Vector3(0.97f, 0.97f, 0.97f), 0.1f);
+        }
+    }
+
+    // ClickReleaseAnim
+    void ClickReleaseAnim()
+    {
+        if (currentColor == normalColor)
+        {   
+            //Btn scales to original
+            btnTrsfm.DOScale(new Vector3(1f, 1f, 1f), 0.1f);
+
+            checkTrsfm.DOMoveY(moveDown, imgAnimTime);
+            checkImg.DOFade(0, 0.1f).SetEase(Ease.Flash);
+            arrowImg.DOFade(0, 0.1f).SetEase(Ease.Flash);
             circleMaskImg.DOFade(0, imgAnimTime).SetEase(Ease.Flash);
-            btnTrsfm.DOScale(new Vector3(0.99f, 0.99f, 0.99f), 0.1f).SetLoops(2, LoopType.Yoyo);
+
+            checkTrsfm.DOMoveY(moveDown, imgAnimTime);
+            checkImg.DOFade(0, 0.1f).SetEase(Ease.Flash);
+            arrowImg.DOFade(0, 0.1f).SetEase(Ease.Flash);
+            circleMaskImg.DOFade(0, imgAnimTime).SetEase(Ease.Flash);
 
             //Text Anim
-            activateTrsfm.DOMoveY(moveUp, textAnimTime).SetAutoKill(true);
+            activateTrsfm.DOMoveY(moveUp, textAnimTime);
             waitingTrsfm.DOMoveY(moveCenter, textAnimTime);
 
-            //Loading Circle Anim
             loadingCircleImg.DOFade(1, 0.3f).SetEase(Ease.Flash);
-            loadingCircleImg.DOFillAmount(0, 1.5f).SetLoops(loops:3).OnComplete(() =>
+            loadingCircleImg.DOFillAmount(0, 3f).OnComplete(() =>
             {
                 // Post-Load Completion Anim
                 currentColor = activatedColor;
                 controller.GetComponent<Image>().color = currentColor;
-                waitingTrsfm.DOMoveY(moveUp, textAnimTime).SetAutoKill(true);
+                waitingTrsfm.DOMoveY(moveUp, textAnimTime);
                 activatedTrsfm.DOMoveY(moveCenter, textAnimTime);
                 circleMaskImg.DOFade(1, imgAnimTime).SetEase(Ease.Flash);
                 greenCheckImg.DOFade(1, imgAnimTime).SetEase(Ease.Flash);
             });
         }
     }
-    */
-}
+};
